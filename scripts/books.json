@@ -1,0 +1,112 @@
+[
+  {
+    "id": "1",
+    "title": "The Midnight Library",
+    "author": "Matt Haig",
+    "genre": "Fiction",
+    "description": "Between life and death there is a library, and...ok provides a chance to try another life you could have lived.",
+    "coverImage": "/book-covers/midnight-library.jpg",
+    "rating": 4.5,
+    "publishedYear": 2020,
+    "isbn": "978-0525559474"
+  },
+  {
+    "id": "2",
+    "title": "Project Hail Mary",
+    "author": "Andy Weir",
+    "genre": "Science Fiction",
+    "description": "Ryland Grace is the sole survivor on a desperate...e new science-based thriller from the author of The Martian.",
+    "coverImage": "/book-covers/project-hail-mary.jpg",
+    "rating": 4.8,
+    "publishedYear": 2021,
+    "isbn": "978-0593135204"
+  },
+  {
+    "id": "3",
+    "title": "The Silent Patient",
+    "author": "Alex Michaelides",
+    "genre": "Mystery",
+    "description": "Alicia Berenson's life is seemingly perfect. A famous pai...im five times in the face, and then never speaks another word.",
+    "coverImage": "/book-covers/silent-patient.jpg",
+    "rating": 4.3,
+    "publishedYear": 2019,
+    "isbn": "978-1250301697"
+  },
+  {
+    "id": "4",
+    "title": "Educated",
+    "author": "Tara Westover",
+    "genre": "Memoir",
+    "description": "An unforgettable memoir about growing up in a strict...verse's pursuit of education and self-discovery.",
+    "coverImage": "/book-covers/educated.jpg",
+    "rating": 4.7,
+    "publishedYear": 2018,
+    "isbn": "978-0399590504"
+  },
+  {
+    "id": "5",
+    "title": "The Thursday Murder Club",
+    "author": "Richard Osman",
+    "genre": "Mystery",
+    "description": "A group of residents in a retirement village meet weekly...best laid plans are about to be derailed by a real case.",
+    "coverImage": "/book-covers/thursday-murder-club.jpg",
+    "rating": 4.1,
+    "publishedYear": 2020,
+    "isbn": "978-1984880987"
+  },
+  {
+    "id": "6",
+    "title": "Klara and the Sun",
+    "author": "Kazuo Ishiguro",
+    "genre": "Science Fiction",
+    "description": "Klara is an Artificial Friend with outstanding observatio...quest to find what it means to love.",
+    "coverImage": "/book-covers/klara-and-the-sun.jpg",
+    "rating": 4.2,
+    "publishedYear": 2021,
+    "isbn": "978-0593318171"
+  },
+  {
+    "id": "7",
+    "title": "The Seven Husbands of Evelyn Hugo",
+    "author": "Taylor Jenkins Reid",
+    "genre": "Romance",
+    "description": "A reclusive Hollywood icon finally tells her story to an...ove story and a reflection on the price of fame.",
+    "coverImage": "/book-covers/seven-husbands.jpg",
+    "rating": 4.6,
+    "publishedYear": 2017,
+    "isbn": "978-1501161933"
+  },
+  {
+    "id": "8",
+    "title": "Think Again",
+    "author": "Adam Grant",
+    "genre": "Self-Help",
+    "description": "The power of knowing what you don't know. A guide to re... and embracing intellectual humility.",
+    "coverImage": "/book-covers/think-again.jpg",
+    "rating": 4.4,
+    "publishedYear": 2021,
+    "isbn": "978-1984878106"
+  },
+  {
+    "id": "9",
+    "title": "Circe",
+    "author": "Madeline Miller",
+    "genre": "Fantasy",
+    "description": "In the house of Helios, god of the sun, a daughter is bo...olation, she finds her true power.",
+    "coverImage": "/book-covers/circe.jpg",
+    "rating": 4.5,
+    "publishedYear": 2018,
+    "isbn": "978-0316556347"
+  },
+  {
+    "id": "10",
+    "title": "Beach Read",
+    "author": "Emily Henry",
+    "genre": "Romance",
+    "description": "A romance writer and a literary fiction writer challenge each other to write in the other's genre during a summer.",
+    "coverImage": "/book-covers/beach-read.jpg",
+    "rating": 4.3,
+    "publishedYear": 2020,
+    "isbn": "978-1984806734"
+  }
+]
