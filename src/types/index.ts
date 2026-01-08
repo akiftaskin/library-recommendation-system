@@ -47,21 +47,9 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-export type CatalogRecommendation = {
-  id: string;
-  type: 'catalog';
-  bookId: string;
-  reason: string;
-  confidence: number;
-};
-
-export type ExternalRecommendation = {
-  id: string;
-  type: 'external';
+export interface Recommendation {
   title: string;
   author: string;
   reason: string;
   confidence: number;
-};
-
-export type Recommendation = CatalogRecommendation | ExternalRecommendation;
+}
