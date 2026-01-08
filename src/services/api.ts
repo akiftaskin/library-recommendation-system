@@ -216,40 +216,17 @@ export async function deleteBook(): Promise<void> {
  *
  * Documentation: https://docs.aws.amazon.com/bedrock/latest/userguide/
  */
-type RecommendationsResponse = { recommendations: Recommendation[] };
-
-function hasRecommendations(data: unknown): data is RecommendationsResponse {
-  return (
-    typeof data === 'object' &&
-    data !== null &&
-    'recommendations' in data &&
-    Array.isArray((data as Record<string, unknown>).recommendations)
-  );
-}
 
 export async function getRecommendations(query: string): Promise<Recommendation[]> {
-  const authHeaders = await getAuthHeaders();
-
+  const headers = await getAuthHeaders();
   const response = await fetch(`${API_BASE_URL}/recommendations`, {
     method: 'POST',
-    headers: {
-      ...authHeaders,
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({ query }),
   });
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    throw new Error(`Failed to get recommendations (${response.status}): ${text}`);
-  }
-
-  const data: unknown = await response.json();
-
-  if (Array.isArray(data)) return data as Recommendation[];
-  if (hasRecommendations(data)) return data.recommendations;
-
-  return [];
+  if (!response.ok) throw new Error('Failed to get recommendations');
+  const data = await response.json();
+  return data.recommendations;
 }
 
 /**
