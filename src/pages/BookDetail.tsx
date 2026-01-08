@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/common/Button';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { getBook } from '@/services/api';
-import { Book } from '@/types';
+import { Modal } from '@/components/common/Modal';
+import { getBook, getReadingLists, updateReadingList } from '@/services/api';
+import { Book, ReadingList } from '@/types';
 import { formatRating } from '@/utils/formatters';
 import { handleApiError } from '@/utils/errorHandling';
 
@@ -15,6 +16,10 @@ export function BookDetail() {
   const navigate = useNavigate();
   const [book, setBook] = useState<Book | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lists, setLists] = useState<ReadingList[]>([]);
+  const [isListsLoading, setIsListsLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -39,9 +44,43 @@ export function BookDetail() {
     }
   };
 
-  // TODO: Implement add to reading list functionality
-  const handleAddToList = () => {
-    alert('Add to reading list functionality coming soon!');
+  const loadLists = async () => {
+    setIsListsLoading(true);
+    try {
+      const data = await getReadingLists();
+      setLists(data);
+    } catch (error) {
+      handleApiError(error);
+    } finally {
+      setIsListsLoading(false);
+    }
+  };
+
+  const handleOpenListModal = async () => {
+    setIsModalOpen(true);
+    if (lists.length === 0) {
+      await loadLists();
+    }
+  };
+
+  const handleToggleBookInList = async (list: ReadingList) => {
+    if (!book) return;
+
+    const exists = list.bookIds.includes(book.id);
+    const nextBookIds = exists
+      ? list.bookIds.filter((b) => b !== book.id)
+      : [...list.bookIds, book.id];
+
+    try {
+      const updated = await updateReadingList(list.id, {
+        bookIds: nextBookIds,
+      });
+
+      setLists((prev) => prev.map((l) => (l.id === list.id ? updated : l)));
+      setIsModalOpen(false);
+    } catch (error) {
+      handleApiError(error);
+    }
   };
 
   if (isLoading) {
@@ -150,7 +189,7 @@ export function BookDetail() {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <Button variant="primary" size="lg" onClick={handleAddToList}>
+                <Button variant="primary" size="lg" onClick={handleOpenListModal}>
                   <svg
                     className="w-5 h-5 mr-2 inline"
                     fill="none"
@@ -213,6 +252,51 @@ export function BookDetail() {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Select a Reading List"
+      >
+        {isListsLoading ? (
+          <div className="flex justify-center py-8">
+            <LoadingSpinner size="md" />
+          </div>
+        ) : lists.length === 0 ? (
+          <div className="text-center py-6">
+            <p className="text-slate-600 mb-4">You don’t have any reading lists yet.</p>
+            <Link
+              to="/reading-lists"
+              className="text-violet-600 hover:text-violet-700 font-semibold"
+            >
+              Create one here
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {lists.map((list) => {
+              const inList = book ? list.bookIds.includes(book.id) : false;
+              return (
+                <button
+                  key={list.id}
+                  onClick={() => handleToggleBookInList(list)}
+                  className="w-full text-left glass-effect rounded-xl border border-white/20 px-4 py-3 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-slate-900">{list.name}</div>
+                      <div className="text-sm text-slate-600">{list.bookIds.length} books</div>
+                    </div>
+                    <span className="text-sm font-semibold text-violet-600">
+                      {inList ? 'Remove' : 'Add'}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
