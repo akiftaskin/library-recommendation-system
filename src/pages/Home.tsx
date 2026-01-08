@@ -78,7 +78,8 @@ export function Home() {
               <span className="gradient-text">Why Choose LibraryAI?</span>
             </h2>
             <p className="text-slate-600 text-xl max-w-2xl mx-auto">
-              Experience the future of book discovery with our intelligent recommendation system
+              AKIF'S Experience the future of book discovery with our intelligent recommendation
+              system
             </p>
           </div>
 
