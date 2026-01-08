@@ -4,6 +4,7 @@ import { Modal } from '@/components/common/Modal';
 import { Input } from '@/components/common/Input';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { getReadingLists, createReadingList } from '@/services/api';
+import { useAuth } from '@/hooks/useAuth';
 import { ReadingList } from '@/types';
 import { formatDate } from '@/utils/formatters';
 import { handleApiError, showSuccess } from '@/utils/errorHandling';
@@ -12,6 +13,7 @@ import { handleApiError, showSuccess } from '@/utils/errorHandling';
  * ReadingLists page component
  */
 export function ReadingLists() {
+  const { user } = useAuth();
   const [lists, setLists] = useState<ReadingList[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,11 +42,15 @@ export function ReadingLists() {
       alert('Please enter a list name');
       return;
     }
+    if (!user) {
+      handleApiError(new Error('You must be logged in to create a reading list.'));
+      return;
+    }
 
     try {
       // TODO: Replace with DynamoDB put operation
       const newList = await createReadingList({
-        userId: '1', // TODO: Get from auth context
+        userId: user.id,
         name: newListName,
         description: newListDescription,
         bookIds: [],

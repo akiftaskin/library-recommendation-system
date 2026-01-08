@@ -255,6 +255,8 @@ Load data:
 
 ```bash
 aws dynamodb batch-write-item --request-items file://books-data.json
+bu hocanın önerdiği - bizim yaptığımız
+aws dynamodb batch-write-item --request-items file://C:/Users/Admin/Desktop/kalite/library-recommendation-system/scripts/books-batch-1.json
 ```
 
 **TIP**: Copy all 10 books from `src/services/mockData.ts` and convert to DynamoDB JSON format.
@@ -822,7 +824,7 @@ export async function getRecommendations(query: string): Promise<Recommendation[
 
 3. **Wait for deployment** (10-15 minutes)
 
-4. **Note your CloudFront URL**: `https://d123abc.cloudfront.net`
+4. **Note your CloudFront URL**: `d2pr3dew6fv44l.cloudfront.net`
 
 5. **Update CORS in API Gateway**:
    - Add CloudFront URL to allowed origins
