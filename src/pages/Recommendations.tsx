@@ -33,7 +33,9 @@ export function Recommendations() {
       // TODO: Replace with actual Bedrock API call
       // This will call Lambda function that uses Amazon Bedrock
       // to generate personalized recommendations based on the query
-      const recs = await getRecommendations();
+      const cleanQuery = query.trim();
+      const recs = await getRecommendations(cleanQuery);
+
       setRecommendations(recs);
 
       // Fetch full book details for each recommendation
