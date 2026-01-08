@@ -3,8 +3,16 @@ import { Button } from '@/components/common/Button';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { BookGrid } from '@/components/books/BookGrid';
 import { getRecommendations, getBook } from '@/services/api';
-import { Book, Recommendation } from '@/types';
 import { handleApiError } from '@/utils/errorHandling';
+import { Book, Recommendation, CatalogRecommendation, ExternalRecommendation } from '@/types';
+
+function isCatalogRecommendation(rec: Recommendation): rec is CatalogRecommendation {
+  return rec.type === 'catalog';
+}
+
+function isExternalRecommendation(rec: Recommendation): rec is ExternalRecommendation {
+  return rec.type === 'external';
+}
 
 /**
  * Recommendations page component with AI-powered suggestions
@@ -34,13 +42,15 @@ export function Recommendations() {
       // This will call Lambda function that uses Amazon Bedrock
       // to generate personalized recommendations based on the query
       const cleanQuery = query.trim();
-      const recs = await getRecommendations(cleanQuery);
+      const result = await getRecommendations(cleanQuery);
+      setRecommendations(result);
 
-      setRecommendations(recs);
+      // Sadece catalog olanları Books tablosundan çek
+      const catalogRecs = result.filter(isCatalogRecommendation);
 
-      // Fetch full book details for each recommendation
-      const books = await Promise.all(recs.map((rec) => getBook(rec.bookId)));
-      setRecommendedBooks(books.filter((book): book is Book => book !== null));
+      const books = await Promise.all(catalogRecs.map((rec) => getBook(rec.bookId)));
+
+      setRecommendedBooks(books.filter((b): b is Book => b !== null));
     } catch (error) {
       handleApiError(error);
     } finally {
@@ -143,14 +153,15 @@ export function Recommendations() {
 
             {/* Display recommendations with reasons */}
             <div className="space-y-6 mb-12">
-              {recommendations.map((rec, index) => {
+              {/* Catalog recommendations */}
+              {recommendations.filter(isCatalogRecommendation).map((rec, index) => {
                 const book = recommendedBooks[index];
                 if (!book) return null;
 
                 return (
                   <div
                     key={rec.id}
-                    className="glass-effect rounded-2xl shadow-xl border border-white/20 p-6 hover-glow transition-all duration-300"
+                    className="glass-effect rounded-2xl shadow-xl border border-white/20 p-6"
                   >
                     <div className="flex items-start gap-6">
                       <img
@@ -178,6 +189,23 @@ export function Recommendations() {
                   </div>
                 );
               })}
+
+              {/* External recommendations */}
+              {recommendations.filter(isExternalRecommendation).map((rec) => (
+                <div
+                  key={rec.id}
+                  className="glass-effect rounded-2xl shadow-xl border border-white/20 p-6"
+                >
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{rec.title}</h3>
+                  <p className="text-slate-600 mb-3 font-medium">by {rec.author}</p>
+                  <p className="text-slate-700 mb-4 leading-relaxed">{rec.reason}</p>
+                  <div className="bg-gradient-to-r from-violet-100 to-indigo-100 px-3 py-1.5 rounded-xl border border-violet-200 inline-block">
+                    <span className="text-sm text-violet-700 font-semibold">
+                      Confidence: {Math.round(rec.confidence * 100)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <BookGrid books={recommendedBooks} />

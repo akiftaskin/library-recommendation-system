@@ -41,15 +41,27 @@ export interface Review {
   createdAt: string;
 }
 
-export interface Recommendation {
-  id: string;
-  bookId: string;
-  reason: string;
-  confidence: number;
-}
-
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
+
+export type CatalogRecommendation = {
+  id: string;
+  type: 'catalog';
+  bookId: string;
+  reason: string;
+  confidence: number;
+};
+
+export type ExternalRecommendation = {
+  id: string;
+  type: 'external';
+  title: string;
+  author: string;
+  reason: string;
+  confidence: number;
+};
+
+export type Recommendation = CatalogRecommendation | ExternalRecommendation;
