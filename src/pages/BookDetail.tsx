@@ -21,10 +21,14 @@ export function BookDetail() {
   const [lists, setLists] = useState<ReadingList[]>([]);
   const [isListsLoading, setIsListsLoading] = useState(false);
 
+  const isInAnyList =
+    !!book && lists.some((list) => list.bookIds.map(String).includes(String(book.id)));
+
   useEffect(() => {
     if (id) {
       loadBook(id);
     }
+    loadLists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -66,9 +70,9 @@ export function BookDetail() {
   const handleToggleBookInList = async (list: ReadingList) => {
     if (!book) return;
 
-    const exists = list.bookIds.includes(book.id);
+    const exists = list.bookIds.map(String).includes(String(book.id));
     const nextBookIds = exists
-      ? list.bookIds.filter((b) => b !== book.id)
+      ? list.bookIds.filter((b) => String(b) !== String(book.id))
       : [...list.bookIds, book.id];
 
     try {
@@ -203,7 +207,7 @@ export function BookDetail() {
                       d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     />
                   </svg>
-                  Add to Reading List
+                  {isInAnyList ? 'Remove from Reading List' : 'Add to Reading List'}
                 </Button>
                 <Button variant="outline" size="lg">
                   <svg

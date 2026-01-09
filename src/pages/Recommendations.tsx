@@ -4,6 +4,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { getRecommendations } from '@/services/api';
 import { handleApiError } from '@/utils/errorHandling';
 import { Recommendation } from '@/types';
+import { mockBooks } from '@/services/mockData';
 
 /**
  * Recommendations page component with AI-powered suggestions
@@ -12,6 +13,7 @@ export function Recommendations() {
   const [query, setQuery] = useState('');
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [fallbackNotice, setFallbackNotice] = useState('');
 
   const exampleQueries = [
     'I love mystery novels with strong female protagonists',
@@ -27,12 +29,29 @@ export function Recommendations() {
     }
 
     setIsLoading(true);
+    setFallbackNotice('');
     try {
       const cleanQuery = query.trim();
       const result = await getRecommendations(cleanQuery);
       setRecommendations(result);
     } catch (error) {
       handleApiError(error);
+
+      const message = String((error as Error).message || '').toLowerCase();
+      if (message.includes('rate limit') || message.includes('throttl')) {
+        setFallbackNotice(
+          'Bedrock token limiti doldu. Şimdilik elimizdeki dataset’ten öneriler gösteriliyor.'
+        );
+
+        const fallback = mockBooks.slice(0, 3).map((b) => ({
+          title: b.title,
+          author: b.author,
+          reason: `Dataset’te mevcut ve türü: ${b.genre}.`,
+          confidence: 0.5,
+        }));
+
+        setRecommendations(fallback);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -130,6 +149,12 @@ export function Recommendations() {
             <h2 className="text-3xl font-bold mb-8">
               <span className="gradient-text">Recommended for You</span>
             </h2>
+
+            {fallbackNotice && (
+              <div className="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800">
+                {fallbackNotice}
+              </div>
+            )}
 
             <div className="space-y-6 mb-12">
               {recommendations.map((rec, index) => (
